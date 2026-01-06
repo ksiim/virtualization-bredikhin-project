@@ -17,7 +17,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY ./Makefile /app/Makefile
 COPY ./src/app /app/./src/app
 COPY ./src/migrations /app/src/migrations
-COPY .env /app/
+COPY ./alembic.ini /app/src/alembic.ini
+
 
 # Миграции
 FROM python:3.12-slim AS migrations
@@ -27,8 +28,6 @@ RUN apt-get update && apt-get install -y curl make && rm -rf /var/lib/apt/lists/
 COPY --from=builder /app/.venv /app/.venv
 COPY --from=builder /app /app
 COPY --from=builder /app/src/migrations /app/src/migrations
-COPY --from=builder /app/.env /app/.env
-COPY ./alembic.ini /app/src/alembic.ini
 
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH="/app:/app"
@@ -45,11 +44,10 @@ COPY --from=builder /app/.venv /app/.venv
 COPY --from=builder /app /app
 COPY --from=builder /app/Makefile /app/Makefile
 COPY --from=builder /app/src/migrations /app/migrations
-COPY --from=builder /app/.env /app/.env
 
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH="/app:/app"
-ENV ALEMBIC_CONFIG=/app/alembic.ini
+ENV ALEMBIC_CONFIG=/app/src/alembic.ini
 CMD ["make dev-run"]
 
 # Production
@@ -61,9 +59,8 @@ COPY --from=ghcr.io/astral-sh/uv:0.4.15 /uv /usr/local/bin/uv
 COPY --from=builder /app/.venv /app/.venv
 COPY --from=builder /app /app
 COPY --from=builder /app/Makefile /app/Makefile
-COPY --from=builder /app/.env /app/.env
 
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH="/app:/app"
-ENV ALEMBIC_CONFIG=/app/alembic.ini
+ENV ALEMBIC_CONFIG=/app/src/alembic.ini
 CMD ["make prod-run"]
