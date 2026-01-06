@@ -1,0 +1,30 @@
+services:
+  app:
+    container_name: virtualization_app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: prod
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8000/api/v1/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  migrations:
+    container_name: virtualization_app-migrations
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: migrations
+    env_file:
+      - ./.env
+    command: alembic upgrade head
+    profiles: [ "migrations" ]
+
