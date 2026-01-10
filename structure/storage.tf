@@ -1,3 +1,7 @@
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
 resource "yandex_iam_service_account" "s3" {
   name = "${var.project}-s3-sa"
 }
@@ -15,8 +19,4 @@ resource "yandex_iam_service_account_static_access_key" "s3_key" {
 
 resource "yandex_storage_bucket" "bucket" {
   bucket = "${var.project}-bucket-${random_id.suffix.hex}"
-}
-
-resource "random_id" "suffix" {
-  byte_length = 4
 }

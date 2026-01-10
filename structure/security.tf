@@ -1,77 +1,22 @@
-resource "yandex_vpc_security_group" "sg_lb" {
-  name       = "${var.project}-sg-lb"
-  network_id = yandex_vpc_network.net.id
-
-  egress {
-    protocol       = "ANY"
-    v4_cidr_blocks = ["0.0.0.0/0"]
-    from_port      = 0
-    to_port        = 65535
-  }
-
-  ingress {
-    protocol       = "TCP"
-    description    = "public http"
-    v4_cidr_blocks = ["0.0.0.0/0"]
-    port           = 80
-  }
-
-  ingress {
-    protocol          = "TCP"
-    description       = "ALB healthchecks"
-    predefined_target = "loadbalancer_healthchecks"
-    port              = 30080
-  }
+resource "yandex_iam_service_account" "s3" {
+  name = "${var.project}-s3-sa"
 }
 
-resource "yandex_vpc_security_group" "sg_app" {
-  name       = "${var.project}-sg-app"
-  network_id = yandex_vpc_network.net.id
-
-  ingress {
-    protocol          = "TCP"
-    description       = "from ALB to app"
-    security_group_id = yandex_vpc_security_group.sg_lb.id
-    port              = var.app_port
-  }
-
-  ingress {
-    protocol       = "TCP"
-    description    = "ssh"
-    v4_cidr_blocks = [var.ssh_allowed_cidr]
-    port           = 22
-  }
-
-  egress {
-    protocol       = "ANY"
-    v4_cidr_blocks = ["0.0.0.0/0"]
-    from_port      = 0
-    to_port        = 65535
-  }
+resource "yandex_resourcemanager_folder_iam_member" "s3_admin" {
+  folder_id = var.folder_id
+  role      = "storage.admin"
+  member    = "serviceAccount:${yandex_iam_service_account.s3.id}"
 }
 
-resource "yandex_vpc_security_group" "sg_db" {
-  name       = "${var.project}-sg-db"
-  network_id = yandex_vpc_network.net.id
+resource "yandex_iam_service_account_static_access_key" "s3_key" {
+  service_account_id = yandex_iam_service_account.s3.id
+  description        = "static key for object storage"
+}
 
-  ingress {
-    protocol          = "TCP"
-    description       = "postgres from app"
-    security_group_id = yandex_vpc_security_group.sg_app.id
-    port              = 5432
-  }
+resource "yandex_storage_bucket" "bucket" {
+  bucket = "${var.project}-bucket-${random_id.suffix.hex}"
+}
 
-  ingress {
-    protocol       = "TCP"
-    description    = "ssh"
-    v4_cidr_blocks = [var.ssh_allowed_cidr]
-    port           = 22
-  }
-
-  egress {
-    protocol       = "ANY"
-    v4_cidr_blocks = ["0.0.0.0/0"]
-    from_port      = 0
-    to_port        = 65535
-  }
+resource "random_id" "suffix" {
+  byte_length = 4
 }

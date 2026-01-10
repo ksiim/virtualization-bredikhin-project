@@ -58,8 +58,15 @@ resource "yandex_alb_load_balancer" "alb" {
   security_group_ids = [yandex_vpc_security_group.sg_lb.id]
 
   allocation_policy {
-    location { zone_id = "ru-central1-a" subnet_id = yandex_vpc_subnet.a.id }
-    location { zone_id = "ru-central1-b" subnet_id = yandex_vpc_subnet.b.id }
+    location {
+      zone_id   = "ru-central1-a"
+      subnet_id = yandex_vpc_subnet.a.id
+    }
+
+    location {
+      zone_id   = "ru-central1-b"
+      subnet_id = yandex_vpc_subnet.b.id
+    }
   }
 
   listener {
@@ -69,6 +76,7 @@ resource "yandex_alb_load_balancer" "alb" {
       address {
         external_ipv4_address {}
       }
+
       ports = [80]
     }
 

@@ -1,6 +1,14 @@
-variable "cloud_id"   { type = string }
-variable "folder_id"  { type = string }
-variable "sa_key_file" { type = string }
+variable "cloud_id" {
+  type = string
+}
+
+variable "folder_id" {
+  type = string
+}
+
+variable "sa_key_file" {
+  type = string
+}
 
 variable "project" {
   type    = string
@@ -31,10 +39,27 @@ variable "git_branch" {
   default = "yc"
 }
 
-variable "db_user" { type = string default = "app" }
-variable "db_pass" { type = string default = "apppass" }
-variable "db_name" { type = string default = "appdb" }
+variable "db_user" {
+  type    = string
+  default = "app"
+}
 
-variable "app_port" { type = number default = 8000 }
+variable "db_pass" {
+  type    = string
+  default = "apppass"
+}
 
-variable "db_disk_gb" { type = number default = 20 }
+variable "db_name" {
+  type    = string
+  default = "appdb"
+}
+
+variable "app_port" {
+  type    = number
+  default = 8000
+}
+
+variable "db_disk_gb" {
+  type    = number
+  default = 20
+}

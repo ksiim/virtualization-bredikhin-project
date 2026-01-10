@@ -1,0 +1,11 @@
+cloud_id   = "b1g54unlfmo4kh8ff8ir"
+folder_id  = "b1ghcoq8njob4pdgen1"
+sa_key_file = "key.json"
+
+ssh_public_key_path = "/home/ter0o/.ssh/id_ed25519.pub"
+ssh_user = "ubuntu"
+
+ssh_allowed_cidr = "0.0.0.0/0"
+
+git_repo   = "https://github.com/ksiim/virtualization-bredikhin-project.git"
+git_branch = "yc"
