@@ -63,4 +63,4 @@ COPY --from=builder /app/Makefile /app/Makefile
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH="/app:/app"
 ENV ALEMBIC_CONFIG=/app/src/alembic.ini
-CMD ["make prod-run"]
+CMD ["uvicorn", "src.app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
