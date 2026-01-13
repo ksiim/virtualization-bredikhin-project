@@ -63,7 +63,9 @@ write_files:
       AWS_ENDPOINT_URL=https://storage.yandexcloud.net
       AWS_REGION=ru-central1
       AWS_STORAGE_BUCKET_NAME=${bucket_name}
-      EOF
+      YMQ_QUEUE_URL="${ymq_queue_url}"
+      YMQ_ACCESS_KEY="${ymq_access_key}"
+      YMQ_SECRET_KEY="${ymq_secret_key}"
 
       echo "[app] wait DB tcp 5432 (${db_host}:5432)"
       for i in $(seq 1 120); do

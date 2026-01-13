@@ -41,9 +41,24 @@ class ProjectSettings(BaseSettings):
 
 @lru_cache(maxsize=1)
 def get_postgres_settings() -> PostgresSettings:
-    return PostgresSettings() # type: ignore
+    return PostgresSettings()  # type: ignore
 
 
 @lru_cache(maxsize=1)
 def get_project_settings() -> ProjectSettings:
-    return ProjectSettings() # type: ignore
+    return ProjectSettings()  # type: ignore
+
+
+class QueueSettings(BaseSettings):
+    ACCESS_KEY: str
+    SECRET_KEY: str
+    QUEUE_URL: str
+
+    model_config = SettingsConfigDict(
+        env_prefix="YMQ_",
+    )
+
+
+@lru_cache(maxsize=1)
+def get_queue_settings() -> QueueSettings:
+    return QueueSettings()  # type: ignore
